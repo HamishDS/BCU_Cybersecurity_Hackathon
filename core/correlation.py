@@ -56,13 +56,33 @@ def _create_incident(src_ip: str, alerts: List[Alert]) -> Incident:
     end_time = alerts[-1].timestamp
     incident_id = str(uuid.uuid4())[:8]
     
+    # Calculate Severity Score
+    # Base scores: High=50, Medium=30, Low=10
+    # Add 10 per alert, capped at 100
+    base_score = 0
+    weights = {"High": 50, "Medium": 30, "Low": 10}
+    
+    # Find max severity
+    max_severity_val = 0
+    for a in alerts:
+        val = weights.get(a.severity, 10)
+        if val > max_severity_val:
+            max_severity_val = val
+            
+    # Formula: Max Severity + (Count * 5)
+    # e.g., 2 High alerts = 50 + 10 = 60
+    # e.g., 10 High alerts = 50 + 50 = 100
+    score = max_severity_val + (len(alerts) * 5)
+    score = min(score, 100) # Cap at 100
+    
     return Incident(
         id=incident_id,
         start_time=start_time,
         end_time=end_time,
         primary_ip=src_ip,
         alerts=alerts,
-        status="New"
+        status="New",
+        severity_score=score
     )
 
     return incidents

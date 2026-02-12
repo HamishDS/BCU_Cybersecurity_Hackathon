@@ -62,7 +62,8 @@ def detect_port_scan(logs: List[LogEntry]) -> List[Alert]:
                     src_ip=src_ip,
                     severity="Medium",
                     alert_type="Port Scan (Horizontal)",
-                    description=f"Scanned {len(unique_targets)} unique hosts in <1 minute"
+                    description=f"Scanned {len(unique_targets)} unique hosts in <1 minute",
+                    mitre_id="T1046" # Network Service Discovery
                 ))
                 break # Move to next IP
                 
@@ -85,7 +86,8 @@ def detect_suspicious_ops(logs: List[LogEntry]) -> List[Alert]:
                     src_ip=log.src_ip,
                     severity="High",
                     alert_type="Suspicious Operation",
-                    description=f"Detected keyword '{kw}' in log"
+                    description=f"Detected keyword '{kw}' in log",
+                    mitre_id="T1059" # Command and Scripting Interpreter
                 ))
     
     return alerts

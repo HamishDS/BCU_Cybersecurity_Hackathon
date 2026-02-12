@@ -34,7 +34,8 @@ def detect_data_exfiltration(logs: List[LogEntry]) -> List[Alert]:
                 src_ip=log.src_ip,
                 severity="High",
                 alert_type="Data Exfiltration",
-                description=f"Large Data Transfer detected: {total_bytes / (1024*1024):.2f} MB ({direction}) to {log.dst_ip}"
+                description=f"Large Data Transfer detected: {total_bytes / (1024*1024):.2f} MB ({direction}) to {log.dst_ip}",
+                mitre_id="T1041" # Exfiltration Over C2 Channel
             )
             alerts.append(alert)
             

@@ -96,7 +96,8 @@ class AIDetector:
                         src_ip=log_data.get('src_ip') or log_data.get('id.orig_h', 'unknown'),
                         severity="Medium", # ML isn't perfect, keep it Medium
                         alert_type=f"AI Detection: {prediction}",
-                        description=f"Machine Learning model classified flow as {prediction}"
+                        description=f"Machine Learning model classified flow as {prediction}",
+                        mitre_id="T1071" # Application Layer Protocol (C&C)
                     )
                     alerts.append(alert)
                     

@@ -43,10 +43,11 @@ def detect_brute_force(logs: list[Any]) -> list[dict[str, Any]]:
         # this stores failure under that ip
 
 
-    # the above loop will inspect each loop and then convert logs into a dictionary format as logs could be
+    # The above loop will inspect each loop and then convert logs into a dictionary format as logs could be
     # a dict a data class or even an object
 
-    alerts: list[dict[str, Any]] = []
+    from .models import Alert  # Import Alert model
+    alerts: list[Alert] = []
 
     # the following loop will check each ip separately
 
@@ -64,23 +65,14 @@ def detect_brute_force(logs: list[Any]) -> list[dict[str, Any]]:
 
 
             if len(window) > THRESHOLD:                             # this is the main logic behind which it will create the alert
-                start_time = window[0][0]
-                end_time = window[-1][0]
-                alerts.append(
-                    {
-                        "type": "Brute Force",
-                        "severity": "High",
-                        "sourceAddress": source_ip,
-                        "eventCount": len(window),
-                        "startTime": start_time.isoformat(),
-                        "endTime": end_time.isoformat(),
-                        "technique": "MITRE ATT&CK T1110 - Brute Force",
-                        "description": (
-                            f"{len(window)} failed login attempts from {source_ip} "
-                            f"within 1 minute."
-                        ),
-                    }
-                )
+                alerts.append(Alert(
+                    timestamp=window[-1][0], # Use timestamp of latest failure
+                    src_ip=source_ip,
+                    severity="High",
+                    alert_type="Brute Force",
+                    description=f"{len(window)} failed login attempts from {source_ip} within 1 minute.",
+                    mitre_id="T1110" # Brute Force
+                ))
                 # what this will do is that it will record the type, severity, source ip,
                 # event count, start & end time, MITRE technique, description
                 # and will reset window to avoid duplicate alerts for the same burst

@@ -108,8 +108,10 @@ def main():
                     st.subheader("Active Incidents")
                     if incidents:
                         for inc in incidents:
-                            with st.expander(f"Incident {inc.id} | IP: {inc.primary_ip} | Severity: {inc.status}"):
+                            score_color = "red" if inc.severity_score > 80 else "orange" if inc.severity_score > 50 else "blue"
+                            with st.expander(f"Incident {inc.id} | IP: {inc.primary_ip} | Severity: {inc.status} (Score: {inc.severity_score})"):
                                 st.write(f"**Status:** {inc.status}")
+                                st.write(f"**Risk Score:** :{score_color}[{inc.severity_score}/100]")
                                 st.write(f"**Associated Alerts:** {len(inc.alerts)}")
                                 
                                 # Show alerts for this incident
@@ -122,12 +124,16 @@ def main():
                                     elif "Port Scan" in a.alert_type or "Suspicious" in a.alert_type: rec['source'] = "🕸️ Net"
                                     elif "Brute Force" in a.alert_type: rec['source'] = "🔐 Auth"
                                     else: rec['source'] = "🛡️ Gen"
+                                    
+                                    # Ensure mitre_id exists (for legacy alerts)
+                                    if 'mitre_id' not in rec: rec['mitre_id'] = "N/A"
+                                    
                                     inc_records.append(rec)
                                     
                                 inc_df = pd.DataFrame(inc_records)
                                 st.dataframe(
                                     inc_df, 
-                                    column_order=["timestamp", "source", "alert_type", "description"],
+                                    column_order=["timestamp", "source", "mitre_id", "alert_type", "description"],
                                     use_container_width=True
                                 )
                     else:
@@ -165,9 +171,10 @@ def main():
                                 "severity": st.column_config.TextColumn("Severity"),
                                 "source_module": st.column_config.TextColumn("Detection Module"),
                                 "alert_type": st.column_config.TextColumn("Alert Type"),
+                                "mitre_id": st.column_config.TextColumn("MITRE ID"),
                                 "description": st.column_config.TextColumn("Description"),
                             },
-                            column_order=["timestamp", "source_module", "severity", "alert_type", "src_ip", "description"],
+                            column_order=["timestamp", "source_module", "severity", "mitre_id", "alert_type", "src_ip", "description"],
                             use_container_width=True
                         )
                     else:

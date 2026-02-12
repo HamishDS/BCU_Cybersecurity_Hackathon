@@ -23,6 +23,7 @@ class Alert:
     severity: str  # "Low", "Medium", "High"
     alert_type: str  # e.g., "Brute Force", "Port Scan"
     description: str
+    mitre_id: str = "T1000"  # Default to 'Technique' generic
 
 @dataclass
 class Incident:
@@ -32,3 +33,4 @@ class Incident:
     primary_ip: str  # The attacker
     alerts: List[Alert]
     status: str = "New"  # "New", "Investigating"
+    severity_score: int = 0  # 0-100 score
