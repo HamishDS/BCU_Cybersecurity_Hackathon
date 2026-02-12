@@ -153,9 +153,22 @@ def _parse_zeek_row(row: dict, source_file: str) -> Union[LogEntry, None]:
     action = _determine_action(conn_state, label, detailed_label)
     
     # Extract metrics for Analysis
-    duration = float(row.get("duration", 0) or 0)
-    orig_bytes = int(row.get("orig_bytes", 0) or 0)
-    resp_bytes = int(row.get("resp_bytes", 0) or 0)
+    def _safe_float(v):
+        try:
+            return float(v) if v and v != '-' else 0.0
+        except ValueError:
+            return 0.0
+
+    def _safe_int(v):
+        try:
+            return int(v) if v and v != '-' else 0
+        except ValueError:
+            return 0
+
+    duration = _safe_float(row.get("duration"))
+    orig_bytes = _safe_int(row.get("orig_bytes"))
+    resp_bytes = _safe_int(row.get("resp_bytes"))
+    
     proto = row.get("proto", "unknown")
     service = row.get("service", "other").replace("-", "other")
 
