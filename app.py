@@ -113,16 +113,45 @@ def main():
                                 st.write(f"**Associated Alerts:** {len(inc.alerts)}")
                                 
                                 # Show alerts for this incident
-                                inc_df = pd.DataFrame([vars(a) for a in inc.alerts])
-                                st.dataframe(inc_df, use_container_width=True)
+                                inc_records = []
+                                for a in inc.alerts:
+                                    rec = vars(a).copy()
+                                    # Simple mapping again (or could make helper global)
+                                    if "AI Detection" in a.alert_type: rec['source'] = "🤖 AI"
+                                    elif "Exfiltration" in a.alert_type: rec['source'] = "📤 Exfil"
+                                    elif "Port Scan" in a.alert_type or "Suspicious" in a.alert_type: rec['source'] = "🕸️ Net"
+                                    elif "Brute Force" in a.alert_type: rec['source'] = "🔐 Auth"
+                                    else: rec['source'] = "🛡️ Gen"
+                                    inc_records.append(rec)
+                                    
+                                inc_df = pd.DataFrame(inc_records)
+                                st.dataframe(
+                                    inc_df, 
+                                    column_order=["timestamp", "source", "alert_type", "description"],
+                                    use_container_width=True
+                                )
                     else:
                         st.success("No active incidents detected.")
 
                 with tab2:
                     st.subheader("Detailed Alert Log")
                     if all_alerts:
-                        # Convert alerts to DataFrame for filtering
-                        alerts_df = pd.DataFrame([vars(a) for a in all_alerts])
+                        # Helper to categorize alerts
+                        def get_source(alert_type):
+                            if "AI Detection" in alert_type: return "🤖 AI Model"
+                            if "Exfiltration" in alert_type: return "📤 Exfil Detection"
+                            if "Port Scan" in alert_type or "Suspicious" in alert_type: return "🕸️ Network Rules"
+                            if "Brute Force" in alert_type: return "🔐 Auth Rules"
+                            return "🛡️ General"
+
+                        # Convert to records and add Source
+                        alert_records = []
+                        for a in all_alerts:
+                            rec = vars(a).copy()
+                            rec['source_module'] = get_source(a.alert_type)
+                            alert_records.append(rec)
+                            
+                        alerts_df = pd.DataFrame(alert_records)
                         
                         # Interactive filters
                         alert_types = st.multiselect("Filter by Type", alerts_df['alert_type'].unique())
@@ -134,7 +163,11 @@ def main():
                             column_config={
                                 "timestamp": st.column_config.DatetimeColumn("Time", format="D MMM HH:mm:ss"),
                                 "severity": st.column_config.TextColumn("Severity"),
+                                "source_module": st.column_config.TextColumn("Detection Module"),
+                                "alert_type": st.column_config.TextColumn("Alert Type"),
+                                "description": st.column_config.TextColumn("Description"),
                             },
+                            column_order=["timestamp", "source_module", "severity", "alert_type", "src_ip", "description"],
                             use_container_width=True
                         )
                     else:
