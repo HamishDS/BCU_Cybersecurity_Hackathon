@@ -61,7 +61,7 @@
 ---
 
 ## 4. AI/ML Anomaly Detection (Advanced Security Layer)
-**Schedule ID:** *Not currently scheduled*
+**Schedule ID:** **Implemented**
 **Goal:** Train a Supervised Learning model on the historical labeled data (`label` column) to detect zero-day or complex patterns that simple rules miss.
 
 
@@ -98,12 +98,25 @@
 
 ---
 
-#Future Development Options
+## 5. Data Exfiltration Detection (Volume Analysis)
+**Status:** **Implemented** (`core/detect_exfil.py`)
+**Goal:** Identify compromised hosts sending large amounts of data out of the network.
 
-## 5. Threat Intelligence & Reputation (Enrichment)
-**Goal:** Cross-reference Source IPs against known malicious actors to catch known threats instantly.
+### 5.1 Logic
+*   **Input:** `LogEntry` with `orig_bytes` + `resp_bytes`.
+*   **Threshold:** Total Flow Bytes > 50 MB.
+*   **Output:**
+    *   `Alert(type="Data Exfiltration", severity="High", description="Large Data Transfer detected: 55.20 MB")`
 
-### 5.1 Static Blocklist (MVP)
+---
+
+# Future Development Options
+
+## 6. Threat Intelligence & Reputation (Enrichment)
+**Goal:** Cross-reference Source IPs against known malicious actors.
+
+
+### 6.1 Static Blocklist (MVP)
 *   **Source:** Download a simplified list (e.g., `alienvault_reputation.generic`).
 *   **Logic:**
     *   Load blocklist into a `set` for O(1) lookup.
@@ -111,22 +124,9 @@
 *   **Output:**
     *   `Alert(type="Known Threat", severity="Critical", description="IP present on AlienVault Blocklist")`
 
-### 5.2 API Integration (Optimization)
+### 6.2 API Integration (Optimization)
 *   **Services:** AbuseIPDB, VirusTotal (Requires API Key).
 *   **Note:** Rate limits may slow down the pipeline. Recommended for *post-alert* investigation only in the MVP.
-
----
-
-## 6. Data Exfiltration Detection (Volume Analysis)
-**Goal:** Identify compromised hosts sending large amounts of data out of the network.
-
-### 6.1 Logic
-*   **Input:** `LogEntry` with `resp_bytes` (Response size indicates data leaving server if `dst_ip` is external).
-*   **Rule:**
-    *   Threshold: Connection `resp_bytes > 50 MB` (tunable).
-    *   Direction: Ensure flow is Internal -> External (requires subnet config).
-*   **Output:**
-    *   `Alert(type="Data Exfiltration", severity="High", description="High volume transfer: 500MB to external IP")`
 
 ---
 

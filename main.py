@@ -31,16 +31,25 @@ def main():
         # A. AI Anomaly Detection
         from core.ai_detection import detect_ml_anomalies
         print(f"  [>] Running AI Anomaly Detection on {len(logs)} logs...")
-        ai_alerts = detect_ml_anomalies(logs)
-        all_alerts.extend(ai_alerts)
-        print(f"    - Generated {len(ai_alerts)} AI alerts")
+        all_alerts.extend(detect_ml_anomalies(logs))
         
         # B. Data Exfiltration Detection
         from core.detect_exfil import detect_data_exfiltration
         print(f"  [>] Running Data Exfiltration Detection...")
-        exfil_alerts = detect_data_exfiltration(logs)
-        all_alerts.extend(exfil_alerts)
-        print(f"    - Generated {len(exfil_alerts)} exfiltration alerts")
+        all_alerts.extend(detect_data_exfiltration(logs))
+        
+        # C. Network Pattern Detection (Port Scan & Suspicious Ops)
+        from core.detect_net import detect_port_scan, detect_suspicious_ops
+        print(f"  [>] Running Network Pattern Detection...")
+        all_alerts.extend(detect_port_scan(logs))
+        all_alerts.extend(detect_suspicious_ops(logs))
+        
+        # D. Authentication Detection (Brute Force)
+        from core.detect_auth import detect_brute_force
+        print(f"  [>] Running Authentication Detection...")
+        # detect_brute_force expects a list, our logs are list of LogEntry
+        # It handles dataclasses internally via _to_dict
+        all_alerts.extend(detect_brute_force(logs)) # type: ignore
         
     else:
         print("WARN: No logs to analyze.")
