@@ -46,7 +46,7 @@
     *   Write `ingest.py`: Reads the raw file, cleans timestamps, renormalizes keys (e.g., rename `src_ip` to `sourceAddress`), and returns a list of standard `LogEntry` objects.
     *   **Deliverable:** A function `load_logs(filepath) -> list[LogEntry]`.
 
-### 3. BSc Student 2 (Detection Logic A: Auth)
+### 3. BSc Student 2 (Detection Logic A: Auth) Ayaan Ahmed
 *   **Responsibility:** Detecting Identity/Login attacks.
 *   **Tasks:**
     *   Write `detect_auth.py`.
