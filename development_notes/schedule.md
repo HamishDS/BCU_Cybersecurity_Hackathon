@@ -39,7 +39,7 @@
     *   Write the file `correlation_engine.py`: Logic to group diverse alerts (from BSc 2 & 3) into a single "Incident" based on IP address or Time Window.
     *   **Deliverable:** A function `correlate_alerts(alerts) -> incidents`.
 
-### 2. BSc Student 1 (Data Ingest)
+### 2. BSc Student 1 (Data Ingest) Victor
 *   **Responsibility:** Getting data INTO the system.
 *   **Tasks:**
     *   Find/Create a clean CSV/JSON dataset (or use synthetic data).
