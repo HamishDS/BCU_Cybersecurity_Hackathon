@@ -1,16 +1,73 @@
-# Intelligent Threat Detection Platform
+# 🛡️ Intelligent Threat Detection Platform
 
-A modular cybersecurity platform designed to ingest network logs, detect anomalies using Machine Learning and heuristic rules, and correlate alerts into actionable incidents.
+### Next-Generation Cybersecurity Analysis & Response System
 
-## Features
+The **Intelligent Threat Detection Platform** is a modular, AI-driven security solution designed to identify, analyze, and correlate malicious network activity in real-time. By combining machine learning models with traditional heuristic rules, it provides a robust defense against both known and emerging cyber threats.
 
-- **AI Anomaly Detection**: Random Forest model trained on Zeek logs to identify malicious traffic patterns (C&C, Malware).
-- **Data Exfiltration Detection**: Flags large outbound transfers (>50MB).
-- **Network Pattern Detection**: Identifies Port Scans and Suspicious Operations (e.g., "sudo" usage).
-- **Authentication Analysis**: Detects Brute Force attempts.
-- **Incident Correlation**: Groups related alerts by Source IP.
+---
 
-## Installation
+## 🚀 Key Features
+
+### 🤖 1. AI Anomaly Detection (Machine Learning)
+Leverages a supervised **Random Forest** model trained on labeled network traffic (Zeek logs).
+- **Capability**: Detects complex, non-linear attack patterns such as Command & Control (C&C) beaconing and malware communication.
+- **Advantage**: Identifies zero-day threats that evade static signatures.
+
+### 📤 2. Data Exfiltration Monitoring
+Real-time volume analysis to prevent data loss.
+- **Trigger**: Flags connections transferring unusually large amounts of data (>50MB).
+- **Use Case**: Detects compromised insiders or malware exfiltrating sensitive files.
+
+### 🕸️ 3. Network Pattern Recognition
+Behavioral analysis to spot reconnaissance and lateral movement.
+- **Port Scan Detection**: Identifies hosts scanning multiple targets rapidly (>10 unique hosts in 1 min).
+- **Suspicious Operations**: Flags dangerous keywords (e.g., `sudo`, `su root`, `shadow file`) in unencrypted traffic logs.
+
+### 🔐 4. Authentication Security
+Protects user accounts from unauthorized access.
+- **Brute Force Detection**: Correlates failed login attempts per source IP.
+- **Threshold**: Alerts on >5 failures within a 60-second window.
+
+### 🔗 5. Automated Incident Correlation
+Reduces alert fatigue by grouping related alerts into actionable **Incidents**.
+- **Logic**: Aggregates multiple alerts from the same Source IP into a single investigation unit.
+- **Benefit**: Provides analysts with a full context of the attack lifecycle.
+
+---
+
+## 🏗️ Architecture
+
+The platform follows a streamlined pipeline architecture:
+
+1.  **Ingest**: Raw network logs (CSV/JSON) are normalized into standard `LogEntry` objects.
+2.  **Detect**: Four specialized modules scan the logs in parallel:
+    - `core/ai_detection.py` (ML Inference)
+    - `core/detect_exfil.py` (Heuristic Rules)
+    - `core/detect_net.py` (Pattern Matching)
+    - `core/detect_auth.py` (Stateful Analysis)
+3.  **Correlate**: The Correlation Engine groups alerts by attacker IP (`core/correlation.py`).
+4.  **Visualize**: A dynamic **Streamlit Dashboard** (`app.py`) presents real-time insights.
+
+---
+
+## 📊 Interactive Dashboard
+
+The platform features a modern web interface built with **Streamlit**:
+
+- **Real-time Metrics**: Total logs processed, active threats, and unique attackers.
+- **Incident Explorer**: Drill down into specific incidents to see all associated alerts.
+- **Threat Analytics**: Visual charts showing attack frequency over time and top attacking IPs.
+- **Source Attribution**: Clearly identifies which detection module flagged the threat (e.g., 🤖 AI vs 🕸️ Network Rule).
+
+---
+
+## ⚡ Getting Started
+
+### Prerequisites
+- Python 3.8+
+- Network Logs (CSV format, e.g., Zeek `conn.log`)
+
+### Installation
 
 1.  **Clone the Repository**:
     ```bash
@@ -19,56 +76,35 @@ A modular cybersecurity platform designed to ingest network logs, detect anomali
     ```
 
 2.  **Install Dependencies**:
-    Requires Python 3.8+.
     ```bash
     pip install -r requirements.txt
     ```
 
-## Usage
-
 ### Running the Platform
 
-### Running the Platform
-
-#### Option 1: Web Interface (Recommended)
 Launch the interactive dashboard:
 ```bash
 streamlit run app.py
 ```
 
-#### Option 2: CLI Mode
-Run the script to process logs in the terminal:
+Or run the CLI version for batch processing:
 ```bash
 python main.py
 ```
 
-This will:
-1.  Load network logs from the `data/` directory (e.g., `CTU-IoT-Malware-Capture-20-1conn.log.labeled.csv`).
-2.  Run all detection modules (AI, Exfil, Network, Auth).
-3.  Display a summary of detected threats and correlated incidents.
+---
 
-### Re-training the AI Model
+## 🧠 AI Model Training
 
-The AI model (`core/ai_models/threat_model.pkl`) is pre-trained. To re-train it on new data:
+The system comes with a pre-trained model. To retrain it on new datasets:
 
 1.  Place labeled CSV logs in the `data/` directory.
 2.  Run the training script:
+    ```bash
+    python training/train_model.py
+    ```
+    This will generate a new `threat_model.pkl` with updated accuracy metrics.
 
-```bash
-python training/train_model.py
-```
+---
 
-Arguments:
-- The script automatically picks up all `.labeled.csv` files in `data/`.
-- It outputs model accuracy metrics and saves the new model to `core/ai_models/`.
-
-## Directory Structure
-
-- `core/`: Detection logic and data models.
-  - `ai_detection.py`: Inference engine.
-  - `detect_exfil.py`: Data exfiltration rules.
-  - `detect_net.py`: Network pattern rules.
-  - `detect_auth.py`: Authentication rules.
-- `training/`: Model training scripts.
-- `data/`: Network log datasets.
-- `development_notes/`: Project documentation and plans.
+**Developed for the BCU Cybersecurity Hackathon**
