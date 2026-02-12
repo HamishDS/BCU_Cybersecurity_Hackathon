@@ -53,7 +53,7 @@
     *   Implement logic: Count failed logins by IP. If > 5 in 1 minute, create an Alert with severity "High" and type "Brute Force".
     *   **Deliverable:** A function `detect_brute_force(logs) -> list[Alert]`.
 
-### 4. BSc Student 3 (Detection Logic B: Network) George James
+### 4. BSc Student 3 (Detection Logic B: Network)
 *   **Responsibility:** Detecting Network/Pattern attacks.
 *   **Tasks:**
     *   Write `detect_network.py`.
@@ -70,7 +70,7 @@
         *   A simple bar chart (Alerts per Type).
     *   **Deliverable:** `app.py` that runs the full visualization.
 
-### 6. BSc Student 5 (Presentation & QA)
+### 6. BSc Student 5 (Presentation & QA) kana
 *   **Responsibility:** The "Pitch" and Quality Control.
 *   **Tasks:**
     *   **The Pitch Deck:** Create 5-7 slides covering the criteria: Problem, Solution, Architecture, Innovation.
