@@ -108,3 +108,10 @@ The system comes with a pre-trained model. To retrain it on new datasets:
 ---
 
 **Developed for the BCU Cybersecurity Hackathon**
+
+## Data Source
+The dataset used in training the AI was sourced from:
+[SecRepo](https://www.secrepo.com) 
+
+Due to time constraints and file sizes. Only about 1% of the data was used during the Hackathon for training. With more time, we would have used the full dataset to improve the accuracy of the AI model.
+Full dataset available [here](https://www.secrepo.com/Security-Data-Analysis/Lab_1/conn.log.zip).
