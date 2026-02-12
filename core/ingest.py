@@ -136,8 +136,8 @@ def _parse_zeek_row(row: dict, source_file: str) -> Union[LogEntry, None]:
     src_ip = row.get("id.orig_h", "").strip()
     dst_ip = row.get("id.resp_h", "").strip()
     conn_state = row.get("conn_state", "").strip()
-    label = row.get("label", "").strip()
-    detailed_label = row.get("detailed-label", "").strip()
+    # label = row.get("label", "").strip()  <-- IGNORED FOR INFERENCE
+    # detailed_label = row.get("detailed-label", "").strip() <-- IGNORED FOR INFERENCE
     
     # Validate required fields
     if not ts_str or not src_ip or not dst_ip:
@@ -150,7 +150,8 @@ def _parse_zeek_row(row: dict, source_file: str) -> Union[LogEntry, None]:
         raise ValueError(f"Invalid timestamp '{ts_str}': {e}")
     
     # Determine action from available fields
-    action = _determine_action(conn_state, label, detailed_label)
+    # We pass None for labels as we want to ignore them
+    action = _determine_action(conn_state, None, None)
     
     # Extract metrics for Analysis
     def _safe_float(v):
@@ -171,6 +172,10 @@ def _parse_zeek_row(row: dict, source_file: str) -> Union[LogEntry, None]:
     
     proto = row.get("proto", "unknown")
     service = row.get("service", "other").replace("-", "other")
+
+    # Remove labels from row to prevent them from leaking into raw_text
+    row.pop("label", None)
+    row.pop("detailed-label", None)
 
     # Build raw text from the entire row (for audit trail)
     raw_text = "|".join([f"{k}={v}" for k, v in row.items()])
@@ -297,11 +302,8 @@ def _determine_action(conn_state: str, label: str, detailed_label: str) -> str:
         Action string for the log entry
     """
     # Return most detailed information available
-    if detailed_label and detailed_label != "-":
-        return detailed_label
-    
-    if label and label != "-":
-        return label
+    # STRICT MVP RULE: Do not use ground truth labels for action determination.
+    # We rely only on connection state.
     
     if conn_state and conn_state != "-":
         return f"Connection:{conn_state}"
