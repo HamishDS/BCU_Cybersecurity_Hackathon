@@ -152,6 +152,13 @@ def _parse_zeek_row(row: dict, source_file: str) -> Union[LogEntry, None]:
     # Determine action from available fields
     action = _determine_action(conn_state, label, detailed_label)
     
+    # Extract metrics for Analysis
+    duration = float(row.get("duration", 0) or 0)
+    orig_bytes = int(row.get("orig_bytes", 0) or 0)
+    resp_bytes = int(row.get("resp_bytes", 0) or 0)
+    proto = row.get("proto", "unknown")
+    service = row.get("service", "other").replace("-", "other")
+
     # Build raw text from the entire row (for audit trail)
     raw_text = "|".join([f"{k}={v}" for k, v in row.items()])
     
@@ -160,7 +167,12 @@ def _parse_zeek_row(row: dict, source_file: str) -> Union[LogEntry, None]:
         src_ip=src_ip,
         dst_ip=dst_ip,
         action=action,
-        raw_text=raw_text
+        raw_text=raw_text,
+        proto=proto,
+        service=service,
+        duration=duration,
+        orig_bytes=orig_bytes,
+        resp_bytes=resp_bytes
     )
 
 

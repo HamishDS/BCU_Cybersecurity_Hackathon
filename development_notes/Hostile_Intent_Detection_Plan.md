@@ -95,3 +95,50 @@
     *   **Threshold:** If `Prob(Malicious) > 0.8`, Trigger Alert.
 *   **Output:**
     *   `Alert(type="AI Anomaly", severity="Medium", description="ML Model detected malicious traffic pattern (Conf: 85%)")`
+
+---
+
+#Future Development Options
+
+## 5. Threat Intelligence & Reputation (Enrichment)
+**Goal:** Cross-reference Source IPs against known malicious actors to catch known threats instantly.
+
+### 5.1 Static Blocklist (MVP)
+*   **Source:** Download a simplified list (e.g., `alienvault_reputation.generic`).
+*   **Logic:**
+    *   Load blocklist into a `set` for O(1) lookup.
+    *   If `src_ip` in `blocklist`: Trigger Critical Alert.
+*   **Output:**
+    *   `Alert(type="Known Threat", severity="Critical", description="IP present on AlienVault Blocklist")`
+
+### 5.2 API Integration (Optimization)
+*   **Services:** AbuseIPDB, VirusTotal (Requires API Key).
+*   **Note:** Rate limits may slow down the pipeline. Recommended for *post-alert* investigation only in the MVP.
+
+---
+
+## 6. Data Exfiltration Detection (Volume Analysis)
+**Goal:** Identify compromised hosts sending large amounts of data out of the network.
+
+### 6.1 Logic
+*   **Input:** `LogEntry` with `resp_bytes` (Response size indicates data leaving server if `dst_ip` is external).
+*   **Rule:**
+    *   Threshold: Connection `resp_bytes > 50 MB` (tunable).
+    *   Direction: Ensure flow is Internal -> External (requires subnet config).
+*   **Output:**
+    *   `Alert(type="Data Exfiltration", severity="High", description="High volume transfer: 500MB to external IP")`
+
+---
+
+## 7. C&C Beaconing Detection (Advanced Pattern)
+**Goal:** Detect malware "checking in" with a Command & Control server at regular intervals.
+
+### 7.1 Logic
+*   **Algorithm:**
+    1.  Filter for small, repeated connections (e.g., < 500 bytes).
+    2.  Group by `dst_ip` pairs.
+    3.  Calculate **Variance** of time deltas between connections.
+    4.  **Threshold:** If Variance is near-zero (perfectly timed intervals like 30s or 60s), Trigger Alert.
+*   **Output:**
+    *   `Alert(type="C&C Beaconing", severity="High", description="Regular connection intervals detected to 10.0.0.5")`
+

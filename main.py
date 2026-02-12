@@ -23,19 +23,34 @@ def main():
     else:
         print(f"⚠ Data file not found: {sample_file}")
     
-    # 2. Detect - Extract alerts (Mock simulation of detection modules output)
-    print("[Step 2] Simulating threat detection modules...")
-    mock_alerts = [
-        Alert(timestamp=datetime.now(), src_ip="192.168.1.50", severity="High", alert_type="Brute Force", description="5 failed logins in 1 min"),
-        Alert(timestamp=datetime.now(), src_ip="192.168.1.50", severity="Low", alert_type="Port Scan", description="Scanned port 22 and 80"),
-        Alert(timestamp=datetime.now(), src_ip="10.0.0.99", severity="Medium", alert_type="Suspicious Ops", description="Sudo used by non-admin"),
-    ]
-    print(f"✓ Generated {len(mock_alerts)} alerts from detection modules")
+    # 2. Detect - Extract alerts
+    print("[Step 2] Running Threat Detection Modules...")
+    all_alerts = []
+    
+    if 'logs' in locals() and logs:
+        # A. AI Anomaly Detection
+        from core.ai_detection import detect_ml_anomalies
+        print(f"  ➜ Running AI Anomaly Detection on {len(logs)} logs...")
+        ai_alerts = detect_ml_anomalies(logs)
+        all_alerts.extend(ai_alerts)
+        print(f"    - Generated {len(ai_alerts)} AI alerts")
+        
+        # B. Data Exfiltration Detection
+        from core.detect_exfil import detect_data_exfiltration
+        print(f"  ➜ Running Data Exfiltration Detection...")
+        exfil_alerts = detect_data_exfiltration(logs)
+        all_alerts.extend(exfil_alerts)
+        print(f"    - Generated {len(exfil_alerts)} exfiltration alerts")
+        
+    else:
+        print("⚠ No logs to analyze.")
+
+    print(f"✓ Total Alerts Generated: {len(all_alerts)}")
     print()
     
     # 3. Correlate - Identify related incidents
     print("[Step 3] Correlating alerts into incidents...")
-    incidents = correlate_alerts(mock_alerts)
+    incidents = correlate_alerts(all_alerts)
     print(f"✓ Generated {len(incidents)} correlated incidents")
     print()
     

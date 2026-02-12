@@ -9,6 +9,12 @@ class LogEntry:
     dst_ip: str
     action: str  # e.g., "Failed Login", "Connection-Attempt"
     raw_text: str
+    # Extended fields for Analysis
+    proto: str = "unknown"
+    service: str = "other"
+    duration: float = 0.0
+    orig_bytes: int = 0
+    resp_bytes: int = 0
 
 @dataclass
 class Alert:
