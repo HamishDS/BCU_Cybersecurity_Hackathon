@@ -1,0 +1,55 @@
+================================================================================
+AI THREAT DETECTION MODEL TRAINING REPORT
+Generated: 2026-02-12 18:08:32
+================================================================================
+
+Data Files: 5
+Total Records: 21,561
+Model Accuracy: 93.88%
+
+Full Training Output:
+--------------------------------------------------------------------------------
+Found 5 data files.
+Loading data/CTU-IoT-Malware-Capture-20-1conn.log.labeled.csv...
+Loading data/CTU-IoT-Malware-Capture-21-1conn.log.labeled.csv...
+Loading data/CTU-IoT-Malware-Capture-42-1conn.log.labeled.csv...
+Loading data/CTU-IoT-Malware-Capture-44-1conn.log.labeled.csv...
+Loading data/CTU-IoT-Malware-Capture-8-1conn.log.labeled.csv...
+Total records: 21561
+Preprocessing data...
+Final X dtypes:
+ proto          object
+service        object
+conn_state     object
+duration      float64
+orig_bytes    float64
+resp_bytes    float64
+orig_pkts       int64
+resp_pkts       int64
+dtype: object
+Final X head:
+   proto service conn_state  ...  resp_bytes  orig_pkts  resp_pkts
+0     2       1          4  ...         0.0          2          0
+1     2       1          8  ...        90.0          2          2
+2     2       1          8  ...        90.0          2          2
+3     2       1          4  ...         0.0          2          0
+4     2       1          8  ...        90.0          2          2
+
+[5 rows x 8 columns]
+Training Random Forest Model...
+Model Accuracy: 0.9387897055413865
+
+Classification Report:
+               precision    recall  f1-score   support
+
+      Benign       0.97      0.93      0.95      2658
+         C&C       0.89      0.95      0.92      1643
+FileDownload       1.00      1.00      1.00         2
+       Torii       0.40      0.20      0.27        10
+
+    accuracy                           0.94      4313
+   macro avg       0.82      0.77      0.79      4313
+weighted avg       0.94      0.94      0.94      4313
+
+Saving model to core/ai_models/threat_model.pkl...
+Done.

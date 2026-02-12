@@ -1,0 +1,8 @@
+{
+  "timestamp": "2026-02-12T18:08:32.557420",
+  "status": "success",
+  "data_files": 5,
+  "total_records": 21561,
+  "accuracy": 0.9387897055413865,
+  "model_path": "core/ai_models/threat_model.pkl"
+}
