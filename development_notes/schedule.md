@@ -70,7 +70,7 @@
         *   A simple bar chart (Alerts per Type).
     *   **Deliverable:** `app.py` that runs the full visualization.
 
-### 6. BSc Student 5 (Presentation & QA)
+### 6. BSc Student 5 (Presentation & QA) kana
 *   **Responsibility:** The "Pitch" and Quality Control.
 *   **Tasks:**
     *   **The Pitch Deck:** Create 5-7 slides covering the criteria: Problem, Solution, Architecture, Innovation.
