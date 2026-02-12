@@ -46,14 +46,14 @@
     *   Write `ingest.py`: Reads the raw file, cleans timestamps, renormalizes keys (e.g., rename `src_ip` to `sourceAddress`), and returns a list of standard `LogEntry` objects.
     *   **Deliverable:** A function `load_logs(filepath) -> list[LogEntry]`.
 
-### 3. BSc Student 2 (Detection Logic A: Auth)
+### 3. BSc Student 2 (Detection Logic A: Auth) Ayaan Ahmed
 *   **Responsibility:** Detecting Identity/Login attacks.
 *   **Tasks:**
     *   Write `detect_auth.py`.
     *   Implement logic: Count failed logins by IP. If > 5 in 1 minute, create an Alert with severity "High" and type "Brute Force".
     *   **Deliverable:** A function `detect_brute_force(logs) -> list[Alert]`.
 
-### 4. BSc Student 3 (Detection Logic B: Network)
+### 4. BSc Student 3 (Detection Logic B: Network) - Adam
 *   **Responsibility:** Detecting Network/Pattern attacks.
 *   **Tasks:**
     *   Write `detect_network.py`.
