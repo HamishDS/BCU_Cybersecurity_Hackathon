@@ -28,8 +28,16 @@ A modular cybersecurity platform designed to ingest network logs, detect anomali
 
 ### Running the Platform
 
-Run the main script to process logs and view generated alerts/incidents:
+### Running the Platform
 
+#### Option 1: Web Interface (Recommended)
+Launch the interactive dashboard:
+```bash
+streamlit run app.py
+```
+
+#### Option 2: CLI Mode
+Run the script to process logs in the terminal:
 ```bash
 python main.py
 ```
