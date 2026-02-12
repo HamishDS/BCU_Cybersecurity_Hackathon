@@ -53,7 +53,7 @@
     *   Implement logic: Count failed logins by IP. If > 5 in 1 minute, create an Alert with severity "High" and type "Brute Force".
     *   **Deliverable:** A function `detect_brute_force(logs) -> list[Alert]`.
 
-### 4. BSc Student 3 (Detection Logic B: Network)
+### 4. BSc Student 3 (Detection Logic B: Network) - Adam
 *   **Responsibility:** Detecting Network/Pattern attacks.
 *   **Tasks:**
     *   Write `detect_network.py`.
